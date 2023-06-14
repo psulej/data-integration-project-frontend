@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
 import { PaginationControl } from 'react-bootstrap-pagination-control';
+import ExportImport from "./ExportImport";
 
 const WeatherData = () => {
     const [page, setPage] = useState(0);
@@ -52,6 +53,8 @@ const WeatherData = () => {
             }}
         >
             <div style={{ display: 'flex', flexDirection: 'column' }}>
+
+                <ExportImport/>
                 <div>
                     <PaginationControl
                         page={page}

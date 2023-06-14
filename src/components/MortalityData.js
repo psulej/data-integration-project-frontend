@@ -87,7 +87,7 @@ const MortalityData = () => {
                         mortalityData.map((item) => (
                             <tr key={item.id}>
                                 <td>{item.id}</td>
-                                <td>{item.voivodeship}</td>
+                                <td>{item.voivodeship.name}</td>
                                 <td>{item.year}</td>
                                 <td>{item.monthNumber}</td>
                                 <td>{item.womanUnder65Age}</td>
