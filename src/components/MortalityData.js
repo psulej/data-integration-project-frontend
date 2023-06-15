@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
 import { PaginationControl } from 'react-bootstrap-pagination-control';
 
-const MortalityData = () => {
+const MortalityData = ({getAuthorizationHeaders}) => {
     const [page, setPage] = useState(0);
     const [mortalityData, setMortalityData] = useState([]);
     const [pageSettings, setPageSettings] = useState({});
@@ -15,9 +15,7 @@ const MortalityData = () => {
         console.log('page: ', page);
         fetch(`http://localhost:8080/data/mortality-data?page=${page}`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { ...getAuthorizationHeaders(), 'Content-Type': 'application/json' }
         })
             .then((response) => {
                 return response.json();

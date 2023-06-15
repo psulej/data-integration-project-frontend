@@ -3,7 +3,7 @@ import { Table } from 'react-bootstrap';
 import { PaginationControl } from 'react-bootstrap-pagination-control';
 import ExportImport from "./ExportImport";
 
-const WeatherData = () => {
+const WeatherData = ({getAuthorizationHeaders}) => {
     const [page, setPage] = useState(0);
     const [weatherData, setWeatherData] = useState([]);
     const [pageSettings, setPageSettings] = useState({});
@@ -16,9 +16,7 @@ const WeatherData = () => {
         console.log('page: ', page);
         fetch(`http://localhost:8080/data/weather-data?page=${page}`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { ...getAuthorizationHeaders(), 'Content-Type': 'application/json' }
         })
             .then((response) => {
                 return response.json();

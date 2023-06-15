@@ -18,7 +18,7 @@ function App() {
       localStorage.removeItem("token")
     }
     const user = {
-      id: decodedToken.id,
+      // id: decodedToken.id,
       login: decodedToken.login,
       name: decodedToken.name,
       email: decodedToken.email,
@@ -100,7 +100,7 @@ function App() {
         localStorage.setItem("token", token.accessToken);
         const decodedToken = jwt(token.accessToken)
         const user = {
-          id: decodedToken.id,
+          // id: decodedToken.id,
           login: decodedToken.login,
           name: decodedToken.name,
           email: decodedToken.email,
@@ -128,24 +128,23 @@ function App() {
   }
 
   return (
-      <Main />
-    // <Routes>
-    //   {authData && <Route path="/" exact element={<Main
-    //     logoutUser={logoutUser}
-    //     authData={authData}
-    //   />} />}
-    //   <Route path="/register" exact element={<Register
-    //     registerUser={registerUser}
-    //     registerNotifications={registerNotifications}
-    //     clearRegisterNotifications={clearRegisterNotifications}
-    //   />} />
-    //   <Route path="/login" exact element={<Login
-    //     authenticateUser={authenticateUser}
-    //     loginNotifications={loginNotifications}
-    //     clearLoginNotifiactions={clearLoginNotifiactions}
-    //   />} />
-    //   <Route path="/" element={<Navigate replace to="/login" />} />
-    // </Routes>
+    <Routes>
+      {authData && <Route path="/" exact element={<Main
+        logoutUser={logoutUser}
+        authData={authData}
+      />} />}
+      <Route path="/register" exact element={<Register
+        registerUser={registerUser}
+        registerNotifications={registerNotifications}
+        clearRegisterNotifications={clearRegisterNotifications}
+      />} />
+      <Route path="/login" exact element={<Login
+        authenticateUser={authenticateUser}
+        loginNotifications={loginNotifications}
+        clearLoginNotifiactions={clearLoginNotifiactions}
+      />} />
+      <Route path="/" element={<Navigate replace to="/login" />} />
+    </Routes>
   )
 }
 

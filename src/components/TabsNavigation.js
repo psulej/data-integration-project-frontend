@@ -4,7 +4,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import WeatherData from "./WeatherData";
 import MortalityData from "./MortalityData";
 
-function TabsNavigation() {
+function TabsNavigation({getAuthorizationHeaders}) {
     const [key, setKey] = useState('home');
 
     return (
@@ -29,10 +29,10 @@ function TabsNavigation() {
                 </div>
             </Tab>
             <Tab eventKey="weather-data" title="Weather data">
-                <WeatherData/>
+                <WeatherData getAuthorizationHeaders={getAuthorizationHeaders}/>
             </Tab>
             <Tab eventKey="mortality-data" title="Mortality data">
-                <MortalityData/>
+                <MortalityData getAuthorizationHeaders={getAuthorizationHeaders}/>
             </Tab>
             <Tab eventKey="charts" title="Charts">
                 <div></div>
