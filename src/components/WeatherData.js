@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
 import { PaginationControl } from 'react-bootstrap-pagination-control';
-import ExportImport from "./ExportImport";
+import ExportImportWeatherData from "./ExportImportWeatherData";
 
 const WeatherData = ({getAuthorizationHeaders}) => {
     const [page, setPage] = useState(0);
@@ -14,7 +14,7 @@ const WeatherData = ({getAuthorizationHeaders}) => {
 
     const fetchWeatherData = () => {
         console.log('page: ', page);
-        fetch(`http://localhost:8080/data/weather-data?page=${page}`, {
+        fetch(`http://localhost:8080/data/weather?page=${page}`, {
             method: 'GET',
             headers: { ...getAuthorizationHeaders(), 'Content-Type': 'application/json' }
         })
@@ -52,7 +52,7 @@ const WeatherData = ({getAuthorizationHeaders}) => {
         >
             <div style={{ display: 'flex', flexDirection: 'column' }}>
 
-                <ExportImport/>
+                <ExportImportWeatherData getAuthorizationHeaders={getAuthorizationHeaders}/>
                 <div>
                     <PaginationControl
                         page={page}
@@ -87,7 +87,22 @@ const WeatherData = ({getAuthorizationHeaders}) => {
                         weatherData.map((item) => (
                             <tr key={item.id}>
                                 <td>{item.id}</td>
-                                <td>{item.date}</td>
+                                <td>{
+                                    (() => {
+                                        const timestamp = new Date(item.date);
+                                        const utcTimestamp = new Date(timestamp.getTime());
+                                        const year = utcTimestamp.getUTCFullYear();
+                                        const month = utcTimestamp.getUTCMonth() + 1;
+                                        const day = utcTimestamp.getUTCDate();
+                                        const hours = utcTimestamp.getUTCHours();
+                                        const minutes = utcTimestamp.getUTCMinutes();
+                                        const formattedMonth = month <= 9 ? `0${month}` : month;
+                                        const formattedDay = day <= 9 ? `0${day}` : day;
+                                        const formattedHours = hours <= 9 ? `0${hours}` : hours;
+                                        const formattedMinutes = minutes <= 9 ? `0${minutes}` : minutes;
+                                        return `${year}-${formattedMonth}-${formattedDay} ${formattedHours}:${formattedMinutes}`;
+                                    })()
+                                }</td>
                                 <td>{item.temperature}</td>
                                 <td>{item.pressure}</td>
                                 <td>{item.precipitation} </td>
@@ -106,8 +121,8 @@ const WeatherData = ({getAuthorizationHeaders}) => {
                         total={pageSettings.totalElements - 1}
                         limit={20}
                         changePage={(page) => {
-                            setPage(page);
                             console.log(page);
+                            setPage(page);
                         }}
                         ellipsis={2}
                     />

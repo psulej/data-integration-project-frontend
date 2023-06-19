@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
 import { PaginationControl } from 'react-bootstrap-pagination-control';
+import ExportImportMortalityData from "./ExportImportMortalityData";
 
 const MortalityData = ({getAuthorizationHeaders}) => {
     const [page, setPage] = useState(0);
@@ -13,7 +14,7 @@ const MortalityData = ({getAuthorizationHeaders}) => {
 
     const fetchWeatherData = () => {
         console.log('page: ', page);
-        fetch(`http://localhost:8080/data/mortality-data?page=${page}`, {
+        fetch(`http://localhost:8080/data/mortality?page=${page}`, {
             method: 'GET',
             headers: { ...getAuthorizationHeaders(), 'Content-Type': 'application/json' }
         })
@@ -50,6 +51,7 @@ const MortalityData = ({getAuthorizationHeaders}) => {
             }}
         >
             <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <ExportImportMortalityData getAuthorizationHeaders={getAuthorizationHeaders}/>
                 <div>
                     <PaginationControl
                         page={page}
@@ -68,8 +70,7 @@ const MortalityData = ({getAuthorizationHeaders}) => {
                     <tr>
                         <th>Id</th>
                         <th>Voivodeship</th>
-                        <th>Year</th>
-                        <th>Month number</th>
+                        <th>Date</th>
                         <th>Woman under 65 age</th>
                         <th>Woman over 65 age</th>
                         <th>Man under 65 age</th>
@@ -86,8 +87,17 @@ const MortalityData = ({getAuthorizationHeaders}) => {
                             <tr key={item.id}>
                                 <td>{item.id}</td>
                                 <td>{item.voivodeship.name}</td>
-                                <td>{item.year}</td>
-                                <td>{item.monthNumber}</td>
+                                <td>{
+                                    (() => {
+                                        const timestamp = new Date(item.date);
+                                        const utcTimestamp = new Date(timestamp.getTime());
+                                        const year = utcTimestamp.getUTCFullYear();
+                                        const month = utcTimestamp.getUTCMonth() + 1;
+                                        if(month <= 9)
+                                            return `${year}-0${month}`;
+                                        return `${year}-${month}`;
+                                    })()
+                                }</td>
                                 <td>{item.womanUnder65Age}</td>
                                 <td>{item.womanOver65Age} </td>
                                 <td>{item.manUnder65Age}</td>
