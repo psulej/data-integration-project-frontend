@@ -103,11 +103,11 @@ const WeatherData = ({getAuthorizationHeaders}) => {
                                         return `${year}-${formattedMonth}-${formattedDay} ${formattedHours}:${formattedMinutes}`;
                                     })()
                                 }</td>
-                                <td>{item.temperature}</td>
-                                <td>{item.pressure}</td>
-                                <td>{item.precipitation} </td>
-                                <td>{item.windDirection}</td>
-                                <td>{item.windVelocity}</td>
+                                <td className="text-center">{item.temperature}</td>
+                                <td className="text-center">{item.pressure}</td>
+                                <td className="text-center">{item.precipitation} </td>
+                                <td className="text-center">{item.windDirection}</td>
+                                <td className="text-center">{item.windVelocity}</td>
                             </tr>
                         ))
                     )}

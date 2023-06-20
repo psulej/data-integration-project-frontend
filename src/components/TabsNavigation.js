@@ -4,7 +4,8 @@ import Tabs from 'react-bootstrap/Tabs';
 import WeatherData from "./WeatherData";
 import MortalityData from "./MortalityData";
 import WeatherDataDetails from "./WeatherDataDetails";
-import {Summary} from "./Summary";
+import {Charts} from "./Charts";
+import Summary from "./Summary";
 
 function TabsNavigation({getAuthorizationHeaders}) {
     const [key, setKey] = useState('home');
@@ -38,7 +39,8 @@ function TabsNavigation({getAuthorizationHeaders}) {
                 <MortalityData getAuthorizationHeaders={getAuthorizationHeaders}/>
             </Tab>
             <Tab eventKey="summary" title="Summary">
-                <Summary />
+                {/*<Charts />*/}
+                <Summary getAuthorizationHeaders={getAuthorizationHeaders}/>
             </Tab>
         </Tabs>
     );

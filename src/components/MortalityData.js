@@ -68,13 +68,13 @@ const MortalityData = ({getAuthorizationHeaders}) => {
                 <Table bordered style={tableStyle} className="table-fixed">
                     <thead>
                     <tr>
-                        <th>Id</th>
-                        <th>Voivodeship</th>
-                        <th>Date</th>
-                        <th>Woman under 65 age</th>
-                        <th>Woman over 65 age</th>
-                        <th>Man under 65 age</th>
-                        <th>Man over 65 age</th>
+                        <th className="text-center">Id</th>
+                        <th className="text-center">Voivodeship</th>
+                        <th className="text-center">Date</th>
+                        <th className="text-center">Woman under 65 age</th>
+                        <th className="text-center">Woman over 65 age</th>
+                        <th className="text-center">Man under 65 age</th>
+                        <th className="text-center">Man over 65 age</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -98,10 +98,10 @@ const MortalityData = ({getAuthorizationHeaders}) => {
                                         return `${year}-${month}`;
                                     })()
                                 }</td>
-                                <td>{item.womanUnder65Age}</td>
-                                <td>{item.womanOver65Age} </td>
-                                <td>{item.manUnder65Age}</td>
-                                <td>{item.manOver65Age}</td>
+                                <td className="text-center">{item.womanUnder65Age}</td>
+                                <td className="text-center">{item.womanOver65Age} </td>
+                                <td className="text-center">{item.manUnder65Age}</td>
+                                <td className="text-center">{item.manOver65Age}</td>
                             </tr>
                         ))
                     )}

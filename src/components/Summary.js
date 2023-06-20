@@ -1,49 +1,101 @@
-import React from 'react';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
-import {Col, Container, Row} from "react-bootstrap";
+import React, { useState, useEffect } from 'react';
+import { Table } from 'react-bootstrap';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+const Summary = ({ getAuthorizationHeaders }) => {
+    const [summaryData, setSummaryData] = useState([]);
+    const [selectedYear, setSelectedYear] = useState('');
 
-export const options = {
-    responsive: true,
-    plugins: {
-        legend: {
-            position: 'top',
-        },
-        title: {
-            display: true,
-            text: 'Chart.js Bar Chart',
-        },
-    },
-};
+    useEffect(() => {
+        fetchSummaryData();
+    }, []);
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+    const fetchSummaryData = () => {
+        fetch(`http://localhost:8080/summary`, {
+            method: 'GET',
+            headers: { ...getAuthorizationHeaders(), 'Content-Type': 'application/json' },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                setSummaryData(data);
+            })
+            .catch((error) => {
+                console.error('Error fetching weather data:', error);
+            });
+    };
 
-export const data = {
-    labels,
-    datasets: [
-        {
-            label: 'Dataset 1',
-            data: [500, 800, 200, 300, 600, 900, 400], // Replace with your mock data
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        },
-        {
-            label: 'Dataset 2',
-            data: [700, 300, 600, 400, 100, 900, 200], // Replace with your mock data
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
-        },
-    ],
-};
+    const tableStyle = {
+        color: 'white',
+        width: 'fit-content',
+        justifyContent: 'center',
+        alignItems: 'center',
+    };
 
-export function Summary() {
+    const handleYearChange = (event) => {
+        setSelectedYear(event.target.value);
+    };
+
+    const getUniqueYears = () => {
+        const years = summaryData.map((item) => item.yearMonth.substring(0, 4));
+        return [...new Set(years)];
+    };
+
+    const filteredData = selectedYear ? summaryData.filter((item) => item.yearMonth.startsWith(selectedYear)) : summaryData;
+
     return (
-        <Container className="mt-5">
-            <Row className="justify-content-center">
-                <Col xs={12} sm={8} md={6}>
-                    <Bar options={options} data={data} />
-                </Col>
-            </Row>
-        </Container>
+        <div className="my-2 mx-auto p-2" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div className="p-1">
+                    <label htmlFor="yearSelector"></label>
+                    <select id="yearSelector" value={selectedYear} onChange={handleYearChange}>
+                        <option value="">All</option>
+                        {getUniqueYears().map((year) => (
+                            <option value={year} key={year}>
+                                {year}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <Table bordered style={tableStyle} className="table-fixed">
+                    <thead>
+                    <tr>
+                        <th className="text-center">Date</th>
+                        <th className="text-center">Average Temperature</th>
+                        <th className="text-center">Average Pressure</th>
+                        <th className="text-center">Average Precipitation</th>
+                        <th className="text-center">Average Wind Velocity</th>
+                        <th className="text-center">Total deaths of man</th>
+                        <th className="text-center">Total deaths of woman</th>
+                        <th className="text-center">Deaths over 65 years old</th>
+                        <th className="text-center">Deaths under 65 years old</th>
+                        <th className="text-center">Total deaths</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {filteredData.length === 0 ? (
+                        <tr>
+                            <td colSpan="10">No data available for the selected year.</td>
+                        </tr>
+                    ) : (
+                        filteredData.map((item) => (
+                            <tr key={item.yearMonth}>
+                                <td className="text-center">{item.yearMonth}</td>
+                                <td className="text-center">{item.averageTemperature.toFixed(2)}°C</td>
+                                <td className="text-center">{item.averagePressure.toFixed(2)}[Pa]</td>
+                                <td className="text-center">{item.averagePrecipitation.toFixed(2)}</td>
+                                <td className="text-center">{item.averageWindVelocity.toFixed(2)}</td>
+                                <td className="text-center">{item.manTotalDeaths}</td>
+                                <td className="text-center">{item.womanTotalDeaths}</td>
+                                <td className="text-center">{item.over65AgeDeaths}</td>
+                                <td className="text-center">{item.under65AgeDeath}</td>
+                                <td className="text-center">{item.totalDeaths}</td>
+                            </tr>
+                        ))
+                    )}
+                    </tbody>
+                </Table>
+            </div>
+        </div>
     );
-}
+};
+
+export default Summary;

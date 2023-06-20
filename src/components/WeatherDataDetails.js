@@ -92,25 +92,25 @@ const WeatherDataDetails = ({getAuthorizationHeaders}) => {
                 </Col>
             </Row>
             {isTableVisible && (
-                <Row className="justify-content-center align-items-center">
-                    <Table striped bordered hover>
+                <Row className="justify-content-center align-items-center" >
+                    <Table striped bordered hover style={tableStyle}>
                         <thead>
                         <tr>
-                            <th>Year</th>
-                            <th>Average Temperature</th>
-                            <th>Average Pressure</th>
-                            <th>Average Wind Velocity</th>
-                            <th>Average Precipitation</th>
+                            <th className="text-center">Year</th>
+                            <th className="text-center">Average Temperature</th>
+                            <th className="text-center">Average Pressure</th>
+                            <th className="text-center">Average Wind Velocity</th>
+                            <th className="text-center">Average Precipitation</th>
                         </tr>
                         </thead>
                         <tbody>
                         {weatherDataSummary.map((weatherData, index) => (
-                            <tr key={index}>
-                                <td>{weatherData.year}</td>
-                                <td>{weatherData.averageTemperature}</td>
-                                <td>{weatherData.averagePressure}</td>
-                                <td>{weatherData.averageWindVelocity}</td>
-                                <td>{weatherData.averagePrecipitation}</td>
+                            <tr key={index} >
+                                <td className="text-center">{weatherData.year}</td>
+                                <td className="text-center">{parseFloat(weatherData.averageTemperature).toFixed(2)}°C</td>
+                                <td className="text-center">{parseFloat(weatherData.averagePressure).toFixed(2)}[Pa]</td>
+                                <td className="text-center">{parseFloat(weatherData.averageWindVelocity).toFixed(2)}</td>
+                                <td className="text-center">{parseFloat(weatherData.averagePrecipitation).toFixed(2)}</td>
                             </tr>
                         ))}
                         </tbody>
@@ -119,8 +119,6 @@ const WeatherDataDetails = ({getAuthorizationHeaders}) => {
             )}
         </Container>
     );
-
-
 };
 
 export default WeatherDataDetails;
