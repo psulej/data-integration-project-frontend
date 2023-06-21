@@ -4,7 +4,7 @@ import { PaginationControl } from 'react-bootstrap-pagination-control';
 import ExportImportWeatherData from "./ExportImportWeatherData";
 
 const WeatherData = ({getAuthorizationHeaders}) => {
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
     const [weatherData, setWeatherData] = useState([]);
     const [pageSettings, setPageSettings] = useState({});
 
@@ -14,7 +14,7 @@ const WeatherData = ({getAuthorizationHeaders}) => {
 
     const fetchWeatherData = () => {
         console.log('page: ', page);
-        fetch(`http://localhost:8080/data/weather?page=${page}`, {
+        fetch(`http://localhost:8080/data/weather?page=${page-1}`, {
             method: 'GET',
             headers: { ...getAuthorizationHeaders(), 'Content-Type': 'application/json' }
         })
@@ -57,7 +57,7 @@ const WeatherData = ({getAuthorizationHeaders}) => {
                     <PaginationControl
                         page={page}
                         between={6}
-                        total={pageSettings.totalElements - 1}
+                        total={pageSettings.totalElements}
                         limit={20}
                         changePage={(page) => {
                             setPage(page);
@@ -118,7 +118,7 @@ const WeatherData = ({getAuthorizationHeaders}) => {
                     <PaginationControl
                         page={page}
                         between={6}
-                        total={pageSettings.totalElements - 1}
+                        total={pageSettings.totalElements}
                         limit={20}
                         changePage={(page) => {
                             console.log(page);

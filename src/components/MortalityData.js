@@ -4,17 +4,17 @@ import { PaginationControl } from 'react-bootstrap-pagination-control';
 import ExportImportMortalityData from "./ExportImportMortalityData";
 
 const MortalityData = ({getAuthorizationHeaders}) => {
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
     const [mortalityData, setMortalityData] = useState([]);
     const [pageSettings, setPageSettings] = useState({});
 
     useEffect(() => {
-        fetchWeatherData();
+        fetchMortalityData();
     }, [page]);
 
-    const fetchWeatherData = () => {
+    const fetchMortalityData = () => {
         console.log('page: ', page);
-        fetch(`http://localhost:8080/data/mortality?page=${page}`, {
+        fetch(`http://localhost:8080/data/mortality?page=${page-1}`, {
             method: 'GET',
             headers: { ...getAuthorizationHeaders(), 'Content-Type': 'application/json' }
         })
@@ -56,7 +56,7 @@ const MortalityData = ({getAuthorizationHeaders}) => {
                     <PaginationControl
                         page={page}
                         between={6}
-                        total={pageSettings.totalElements - 1}
+                        total={pageSettings.totalElements}
                         limit={21}
                         changePage={(page) => {
                             setPage(page);
@@ -111,7 +111,7 @@ const MortalityData = ({getAuthorizationHeaders}) => {
                     <PaginationControl
                         page={page}
                         between={6}
-                        total={pageSettings.totalElements - 1}
+                        total={pageSettings.totalElements}
                         limit={21}
                         changePage={(page) => {
                             setPage(page);

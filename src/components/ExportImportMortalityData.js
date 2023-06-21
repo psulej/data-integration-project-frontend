@@ -18,10 +18,12 @@ const ExportImportWeatherData = ({getAuthorizationHeaders}) => {
             case 'importXML':
                 console.log('import xml');
                 console.log('selected file', selectedFile);
+                importXML()
                 break;
             case 'importJSON':
                 console.log('import json');
                 console.log('selected file', selectedFile);
+                importJSON()
                 break;
             default:
                 break;
@@ -38,6 +40,63 @@ const ExportImportWeatherData = ({getAuthorizationHeaders}) => {
 
     const shouldShowFileInput = selectedOption.startsWith('import');
     const shouldShowExportButton = selectedOption.startsWith('export');
+
+    const importXML = () => {
+        if (selectedFile) {
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            console.log(formData.has('file'));
+            console.log('filename:', selectedFile.name);
+
+            const url = 'http://localhost:8080/data/mortality/import/xml';
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    ...getAuthorizationHeaders(),
+                },
+                body: formData,
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Import failed');
+                    }
+                    console.log('XML import successful');
+                })
+                .catch((error) => {
+                    console.error('Import failed:', error);
+                });
+        }
+    };
+
+    const importJSON = () => {
+        if (selectedFile) {
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            console.log(formData.has('file'));
+            console.log('filename:', selectedFile.name);
+
+            const url = 'http://localhost:8080/data/mortality/import/json';
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    ...getAuthorizationHeaders(),
+                },
+                body: formData,
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Import failed');
+                    }
+                    console.log('JSON import successful');
+                })
+                .catch((error) => {
+                    console.error('Import failed:', error);
+                });
+        }
+    };
+
 
     const exportXML = () => {
         fetch(`http://localhost:8080/data/mortality/export/xml`, {

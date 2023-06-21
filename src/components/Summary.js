@@ -59,15 +59,15 @@ const Summary = ({ getAuthorizationHeaders }) => {
                     <thead>
                     <tr>
                         <th className="text-center">Date</th>
-                        <th className="text-center">Average Temperature</th>
-                        <th className="text-center">Average Pressure</th>
-                        <th className="text-center">Average Precipitation</th>
-                        <th className="text-center">Average Wind Velocity</th>
-                        <th className="text-center">Total deaths of man</th>
-                        <th className="text-center">Total deaths of woman</th>
-                        <th className="text-center">Deaths over 65 years old</th>
-                        <th className="text-center">Deaths under 65 years old</th>
-                        <th className="text-center">Total deaths</th>
+                        <th className="text-center" style={{backgroundColor: 'lightcyan'}}>Average Temperature</th>
+                        <th className="text-center" style={{backgroundColor: 'lightcyan'}}>Average Pressure</th>
+                        <th className="text-center" style={{backgroundColor: 'lightcyan'}}>Average Precipitation</th>
+                        <th className="text-center" style={{backgroundColor: 'lightcyan'}}>Average Wind Velocity</th>
+                        <th className="text-center" style={{backgroundColor: 'lightgrey'}}>Total deaths of man</th>
+                        <th className="text-center" style={{backgroundColor: 'lightgrey'}}>Total deaths of woman</th>
+                        <th className="text-center" style={{backgroundColor: 'lightgrey'}}>Deaths over 65 years old</th>
+                        <th className="text-center" style={{backgroundColor: 'lightgrey'}}>Deaths under 65 years old</th>
+                        <th className="text-center" style={{backgroundColor: 'lightgrey'}}>Total deaths</th>
                     </tr>
                     </thead>
                     <tbody>
