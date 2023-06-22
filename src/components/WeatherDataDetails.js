@@ -1,5 +1,6 @@
 import {Button, Col, Container, Row, Table} from "react-bootstrap";
 import React, {useState} from "react";
+
 const WeatherDataDetails = ({getAuthorizationHeaders}) => {
     const [weatherDataSummary, setWeatherDataSummary] = useState([]);
     const [isTableVisible, setIsTableVisible] = useState(false);

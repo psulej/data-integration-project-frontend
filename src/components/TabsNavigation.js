@@ -4,11 +4,61 @@ import Tabs from 'react-bootstrap/Tabs';
 import WeatherData from "./WeatherData";
 import MortalityData from "./MortalityData";
 import WeatherDataDetails from "./WeatherDataDetails";
-import {Charts} from "./Charts";
 import Summary from "./Summary";
+import AdminPanel from "./AdminPanel";
 
-function TabsNavigation({getAuthorizationHeaders}) {
+function TabsNavigation({getAuthorizationHeaders, authData}) {
     const [key, setKey] = useState('home');
+
+    // WEATHER DATA
+    const [weatherData, setWeatherData] = useState([]);
+    const [weatherPageSettings, setWeatherPageSettings] = useState({});
+    const [weatherPage, setWeatherPage] = useState(1);
+    const fetchWeatherData = () => {
+        fetch(`http://localhost:8080/data/weather?page=${weatherPage-1}`, {
+            method: 'GET',
+            headers: { ...getAuthorizationHeaders(), 'Content-Type': 'application/json' }
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data);
+                setWeatherData(data.content);
+                setWeatherPageSettings({
+                    totalPages: data.totalPages,
+                    totalElements: data.totalElements
+                });
+            })
+            .catch((error) => {
+                console.error('Error fetching weather data:', error);
+            });
+    };
+    
+    // MORTALITY DATA
+    const [mortalityPage, setMortalityPage] = useState(1);
+    const [mortalityData, setMortalityData] = useState([]);
+    const [mortalityPageSettings, setMortalityPageSettings] = useState({});
+    const fetchMortalityData = () => {
+        fetch(`http://localhost:8080/data/mortality?page=${mortalityPage - 1}`, {
+            method: 'GET',
+            headers: {...getAuthorizationHeaders(), 'Content-Type': 'application/json'}
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data);
+                setMortalityData(data.content);
+                setMortalityPageSettings({
+                    totalPages: data.totalPages,
+                    totalElements: data.totalElements
+                });
+            })
+            .catch((error) => {
+                console.error('Error fetching weather data:', error);
+            });
+    };
 
     return (
         <Tabs
@@ -33,15 +83,37 @@ function TabsNavigation({getAuthorizationHeaders}) {
             </Tab>
             <Tab eventKey="weather-data" title="Weather data">
                 <WeatherDataDetails getAuthorizationHeaders={getAuthorizationHeaders}/>
-                <WeatherData getAuthorizationHeaders={getAuthorizationHeaders}/>
+                <WeatherData
+                    getAuthorizationHeaders={getAuthorizationHeaders}
+                    fetchWeatherData={fetchWeatherData}
+                    pageSettings={weatherPageSettings}
+                    weatherData={weatherData}
+                    page={weatherPage}
+                    setPage={setWeatherPage}
+                />
             </Tab>
             <Tab eventKey="mortality-data" title="Mortality data">
-                <MortalityData getAuthorizationHeaders={getAuthorizationHeaders}/>
+                <MortalityData
+                    getAuthorizationHeaders={getAuthorizationHeaders}
+                    fetchMortalityData={fetchMortalityData}
+                    pageSettings={mortalityPageSettings}
+                    mortalityData={mortalityData}
+                    page={mortalityPage}
+                    setPage={setMortalityPage}
+                />
             </Tab>
             <Tab eventKey="summary" title="Summary">
-                {/*<Charts />*/}
                 <Summary getAuthorizationHeaders={getAuthorizationHeaders}/>
             </Tab>
+            {authData.user.roles.includes("ADMIN") && (
+                <Tab eventKey="manage-data" title="Admin CMS">
+                    <AdminPanel
+                        getAuthorizationHeaders={getAuthorizationHeaders}
+                        fetchWeatherData={fetchWeatherData}
+                        fetchMortalityData={fetchMortalityData}
+                    />
+                </Tab>
+            )}
         </Tabs>
     );
 }

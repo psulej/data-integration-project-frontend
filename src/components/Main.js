@@ -1,10 +1,7 @@
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navigation from './Navbar';
-import WeatherData from "./WeatherData";
-import MortalityData from "./MortalityData";
 import TabsNavigation from "./TabsNavigation";
-
 
 
 function Main({ logoutUser, authData }) {
@@ -25,7 +22,7 @@ function Main({ logoutUser, authData }) {
         />
       </header>
         <main className="main-content">
-          <TabsNavigation getAuthorizationHeaders={getAuthorizationHeaders}/>
+          <TabsNavigation getAuthorizationHeaders={getAuthorizationHeaders} authData={authData}/>
         </main>
     </div>
   );

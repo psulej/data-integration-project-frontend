@@ -1,29 +1,43 @@
-import React, { useState } from 'react';
-import { Button, Col, Container, Form, Row } from 'react-bootstrap';
+import React, {useState} from 'react';
+import {Button, Col, Container, Form, Row} from 'react-bootstrap';
 
-const ExportImportWeatherData = ({getAuthorizationHeaders}) => {
+const ExportImportMortalityData = (
+    {
+        getAuthorizationHeaders,
+        fetchMortalityData
+    }
+) => {
     const [selectedOption, setSelectedOption] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const getAcceptedFileExtensions = () => {
+        switch (selectedOption) {
+            case "importXML":
+                return ".xml"
+            case "importJSON":
+                return ".json"
+            default:
+                return ""
+        }
+    }
 
     const handleExportImport = () => {
         switch (selectedOption) {
             case 'exportXML':
                 console.log('export xml');
-                exportXML()
+                exportXML();
                 break;
             case 'exportJSON':
                 console.log('export json');
-                exportJSON()
+                exportJSON();
                 break;
             case 'importXML':
-                console.log('import xml');
-                console.log('selected file', selectedFile);
-                importXML()
+                importXML();
                 break;
             case 'importJSON':
-                console.log('import json');
-                console.log('selected file', selectedFile);
-                importJSON()
+                importJSON();
                 break;
             default:
                 break;
@@ -40,6 +54,62 @@ const ExportImportWeatherData = ({getAuthorizationHeaders}) => {
 
     const shouldShowFileInput = selectedOption.startsWith('import');
     const shouldShowExportButton = selectedOption.startsWith('export');
+
+    const exportXML = () => {
+        fetch(`http://localhost:8080/data/mortality/export/xml`, {
+            method: 'GET',
+            headers: {...getAuthorizationHeaders(), 'Content-Type': 'application/json'},
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Export failed');
+                }
+                return response.blob();
+            })
+            .then((blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'mortality-data.xml');
+                document.body.appendChild(link);
+                link.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(link);
+                showSuccessMessage('XML export successful');
+            })
+            .catch((error) => {
+                console.error('Export failed:', error);
+                showErrorMessage('Export failed');
+            });
+    };
+
+    const exportJSON = () => {
+        fetch(`http://localhost:8080/data/mortality/export/json`, {
+            method: 'GET',
+            headers: {...getAuthorizationHeaders(), 'Content-Type': 'application/json'},
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Export failed');
+                }
+                return response.blob();
+            })
+            .then((blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'mortality-data.json');
+                document.body.appendChild(link);
+                link.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(link);
+                showSuccessMessage('JSON export successful');
+            })
+            .catch((error) => {
+                console.error('Export failed:', error);
+                showErrorMessage('Export failed');
+            });
+    };
 
     const importXML = () => {
         if (selectedFile) {
@@ -60,11 +130,15 @@ const ExportImportWeatherData = ({getAuthorizationHeaders}) => {
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error('Import failed');
+                        showErrorMessage('Import failed');
                     }
                     console.log('XML import successful');
+                    showSuccessMessage('XML import successful');
                 })
+                .then(() => fetchMortalityData())
                 .catch((error) => {
                     console.error('Import failed:', error);
+                    showErrorMessage('Import failed');
                 });
         }
     };
@@ -88,74 +162,51 @@ const ExportImportWeatherData = ({getAuthorizationHeaders}) => {
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error('Import failed');
+                        showErrorMessage('Import failed');
                     }
                     console.log('JSON import successful');
+                    showSuccessMessage('JSON import successful');
                 })
+                .then(fetchMortalityData)
                 .catch((error) => {
                     console.error('Import failed:', error);
+                    showErrorMessage('Import failed');
                 });
         }
     };
 
-
-    const exportXML = () => {
-        fetch(`http://localhost:8080/data/mortality/export/xml`, {
-            method: 'GET',
-            headers: { ...getAuthorizationHeaders(), 'Content-Type': 'application/json' }
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Export failed');
-                }
-                return response.blob();
-            })
-            .then((blob) => {
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'mortality-data.xml');
-                document.body.appendChild(link);
-                link.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(link);
-            })
-            .catch((error) => {
-                console.error('Export failed:', error);
-            });
+    const showSuccessMessage = (message) => {
+        setSuccessMessage(message);
+        setTimeout(() => {
+            setSuccessMessage('');
+        }, 2000);
     };
 
-    const exportJSON = () => {
-        fetch(`http://localhost:8080/data/mortality/export/json`, {
-            method: 'GET',
-            headers: { ...getAuthorizationHeaders(), 'Content-Type': 'application/json' }
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Export failed');
-                }
-                return response.blob();
-            })
-            .then((blob) => {
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'mortality-data.json');
-                document.body.appendChild(link);
-                link.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(link);
-            })
-            .catch((error) => {
-                console.error('Export failed:', error);
-            });
+    const showErrorMessage = (message) => {
+        setErrorMessage(message);
+        setTimeout(() => {
+            setErrorMessage('');
+        }, 2000);
     };
 
     return (
         <Container className="p-2">
+            {successMessage && (
+                <div className="alert alert-success" role="alert">
+                    {successMessage}
+                </div>
+            )}
+            {errorMessage && (
+                <div className="alert alert-danger" role="alert">
+                    {errorMessage}
+                </div>
+            )}
             <Row className="justify-content-between align-items-center">
                 <Col>
                     <Form.Select value={selectedOption} onChange={handleSelectChange}>
-                        <option value="" disabled>Select IMPORT/EXPORT</option>
+                        <option value="" disabled>
+                            Select IMPORT/EXPORT
+                        </option>
                         <option value="exportXML">Export XML</option>
                         <option value="exportJSON">Export JSON</option>
                         <option value="importXML">Import XML</option>
@@ -164,12 +215,16 @@ const ExportImportWeatherData = ({getAuthorizationHeaders}) => {
                 </Col>
                 {shouldShowFileInput ? (
                     <Col>
-                        <Row className='p-2'>
+                        <Row className="p-2">
                             <Form.Group controlId="formFile">
-                                <Form.Control type="file" onChange={handleFileChange} />
+                                <Form.Control
+                                    type="file"
+                                    accept={getAcceptedFileExtensions()}
+                                    onChange={handleFileChange}
+                                />
                             </Form.Group>
                         </Row>
-                        <Row className='p-2'>
+                        <Row className="p-2">
                             <Button variant="primary" onClick={handleExportImport}>
                                 Import
                             </Button>
@@ -178,7 +233,7 @@ const ExportImportWeatherData = ({getAuthorizationHeaders}) => {
                 ) : (
                     shouldShowExportButton && (
                         <Col>
-                            <Row className='p-2'>
+                            <Row className="p-2">
                                 <Button variant="primary" onClick={handleExportImport}>
                                     Export
                                 </Button>
@@ -191,4 +246,4 @@ const ExportImportWeatherData = ({getAuthorizationHeaders}) => {
     );
 };
 
-export default ExportImportWeatherData;
+export default ExportImportMortalityData;

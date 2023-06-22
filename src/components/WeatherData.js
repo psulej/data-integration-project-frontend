@@ -1,38 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Table } from 'react-bootstrap';
-import { PaginationControl } from 'react-bootstrap-pagination-control';
+import React, {useState, useEffect} from 'react';
+import {Table} from 'react-bootstrap';
+import {PaginationControl} from 'react-bootstrap-pagination-control';
 import ExportImportWeatherData from "./ExportImportWeatherData";
 
-const WeatherData = ({getAuthorizationHeaders}) => {
-    const [page, setPage] = useState(1);
-    const [weatherData, setWeatherData] = useState([]);
-    const [pageSettings, setPageSettings] = useState({});
+const WeatherData = (
+    {
+        getAuthorizationHeaders,
+        fetchWeatherData,
+        weatherData,
+        pageSettings,
+        page,
+        setPage
+    }
+) => {
 
     useEffect(() => {
         fetchWeatherData();
     }, [page]);
 
-    const fetchWeatherData = () => {
-        console.log('page: ', page);
-        fetch(`http://localhost:8080/data/weather?page=${page-1}`, {
-            method: 'GET',
-            headers: { ...getAuthorizationHeaders(), 'Content-Type': 'application/json' }
-        })
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                console.log(data);
-                setWeatherData(data.content);
-                setPageSettings({
-                    totalPages: data.totalPages,
-                    totalElements: data.totalElements
-                });
-            })
-            .catch((error) => {
-                console.error('Error fetching weather data:', error);
-            });
-    };
 
     const tableStyle = {
         color: 'white',
@@ -50,9 +35,12 @@ const WeatherData = ({getAuthorizationHeaders}) => {
                 alignItems: 'center',
             }}
         >
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{display: 'flex', flexDirection: 'column'}}>
 
-                <ExportImportWeatherData getAuthorizationHeaders={getAuthorizationHeaders}/>
+                <ExportImportWeatherData
+                    getAuthorizationHeaders={getAuthorizationHeaders}
+                    fetchWeatherData={fetchWeatherData}
+                />
                 <div>
                     <PaginationControl
                         page={page}
@@ -81,7 +69,7 @@ const WeatherData = ({getAuthorizationHeaders}) => {
                     <tbody>
                     {weatherData.length === 0 ? (
                         <tr>
-                            <td colSpan="7">Loading weather data...</td>
+                            <td colSpan="7">No Data loaded...</td>
                         </tr>
                     ) : (
                         weatherData.map((item) => (

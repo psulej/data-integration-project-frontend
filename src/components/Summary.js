@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table } from 'react-bootstrap';
+import {Button, Table} from 'react-bootstrap';
 
 const Summary = ({ getAuthorizationHeaders }) => {
     const [summaryData, setSummaryData] = useState([]);
@@ -44,9 +44,9 @@ const Summary = ({ getAuthorizationHeaders }) => {
     return (
         <div className="my-2 mx-auto p-2" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div className="p-1">
+                <div className="p-1" style={{ marginBottom: '10px' }}>
                     <label htmlFor="yearSelector"></label>
-                    <select id="yearSelector" value={selectedYear} onChange={handleYearChange}>
+                    <select id="yearSelector" value={selectedYear} onChange={handleYearChange} className="btn btn-primary btn-sm">
                         <option value="">All</option>
                         {getUniqueYears().map((year) => (
                             <option value={year} key={year}>
@@ -54,7 +54,9 @@ const Summary = ({ getAuthorizationHeaders }) => {
                             </option>
                         ))}
                     </select>
+                    <Button variant="primary" size="sm" onClick={() => fetchSummaryData()} style={{ marginLeft: '10px' }}>Refresh data</Button>
                 </div>
+
                 <Table bordered style={tableStyle} className="table-fixed">
                     <thead>
                     <tr>
